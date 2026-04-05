@@ -1,0 +1,75 @@
+# two-step-redirect-example workflow
+#
+# This sample demonstrates a generic two-step redirect navigation:
+#   1. Open a landing page.
+#   2. Wait for and click a "continue" button.
+#   3. Pause for a countdown timer.
+#   4. Locate and extract the final destination link.
+#
+# Intended for authorized testing on websites you own or have permission to test.
+
+name: two-step-redirect-example
+start_url: https://example.com/start
+
+# Optional: warn if the final URL is not on this domain.
+expected_final_domain: example.com
+
+# Total workflow timeout in seconds.
+max_wait_seconds: 60
+
+# Output style: "human" or "json"
+output_format: human
+
+# Run Chrome in headless mode.
+headless: true
+
+# Default per-step explicit-wait timeout (seconds).
+timeout: 30
+
+# Number of retries for click/find operations on transient failures.
+retries: 3
+
+steps:
+  - action: open_url
+    url: https://example.com/start
+    label: "Open landing page"
+
+  - action: wait_for_element
+    selector_type: css
+    selector: "#continue-btn"
+    timeout: 15
+    label: "Wait for continue button to appear"
+
+  - action: scroll_to_element
+    selector_type: css
+    selector: "#continue-btn"
+    label: "Scroll continue button into view"
+
+  - action: click_element
+    selector_type: css
+    selector: "#continue-btn"
+    label: "Click the continue button"
+
+  - action: wait_seconds
+    seconds: 5
+    label: "Wait for countdown timer"
+
+  - action: wait_for_element
+    selector_type: css
+    selector: "a#final-link"
+    timeout: 20
+    label: "Wait for the final destination link"
+
+  - action: extract_link_href
+    selector_type: css
+    selector: "a#final-link"
+    store_as: final_url
+    label: "Extract final destination URL"
+
+  - action: extract_current_url
+    store_as: resolved_url
+    label: "Capture current browser URL"
+
+  - action: extract_page_title
+    store_as: page_title
+    label: "Capture page title"
