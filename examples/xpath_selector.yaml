@@ -1,0 +1,47 @@
+# XPath selector example
+#
+# Some elements are easier to target with XPath than CSS selectors.
+# This workflow shows how to use selector_type: xpath.
+#
+# Use only on websites you own or have explicit permission to test.
+
+name: xpath-selector-example
+start_url: https://example.com/some-page
+
+max_wait_seconds: 60
+output_format: json
+headless: true
+timeout: 20
+retries: 2
+
+steps:
+  - action: open_url
+    url: https://example.com/some-page
+    label: "Open page"
+
+  - action: wait_for_element
+    selector_type: xpath
+    selector: "//button[contains(text(),'Download')]"
+    timeout: 15
+    label: "Wait for Download button"
+
+  - action: click_element
+    selector_type: xpath
+    selector: "//button[contains(text(),'Download')]"
+    label: "Click Download button"
+
+  - action: wait_for_element
+    selector_type: css
+    selector: ".download-link"
+    timeout: 20
+    label: "Wait for download link to appear"
+
+  - action: extract_link_href
+    selector_type: css
+    selector: ".download-link"
+    store_as: download_href
+    label: "Extract download link"
+
+  - action: extract_current_url
+    store_as: final_url
+    label: "Capture current URL"
